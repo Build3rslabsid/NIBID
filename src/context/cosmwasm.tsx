@@ -24,6 +24,7 @@ let { Provider } = (CosmWasmContext =
 
     executeRegister:(name:string, duration:number, price:number) => {},
     extendDate:(name:string, duration:number) => {},
+    executeTransfer:(name:string, newOwner:string) => {},
 
     fetchName:(name:string) => {},
     fetchDomains:(addr:string) => {},

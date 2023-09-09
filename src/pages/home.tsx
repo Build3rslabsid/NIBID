@@ -117,8 +117,7 @@ const Home: React.FC<Props> = () => {
   const [myDomains, setMyDomains] = useState([]);
   const [currentDomainName, setCurrentDomainName] = useState("");
   const [selectedDomainName, setSelectedDomainName] = useState("");
-  const [resolverAddress, setResolverAddress] = useState("");
-  const [resolverOwner, setResolverOwner] = useState("");
+  const [resolvernewOwner, setResolverNewOwner] = useState("");
   const [isLoading, setLoadingView] = useState(false);
   const [isExtending, setLoadingExtending] = useState(false);
   const {
@@ -127,10 +126,10 @@ const Home: React.FC<Props> = () => {
     fetchDomains,
     fetchAllDomains,
     totalDomainCount,
-    fetchName,
     nativeBalance,
     executeRegister,
     extendDate,
+    executeTransfer,
     loading,
     domains
   } = useSigningClient()
@@ -167,6 +166,20 @@ const Home: React.FC<Props> = () => {
     console.log("**********Current Price:", parseInt(duration.toString()) * fixedPrice);
     setCurrentPrice(parseInt(duration.toString()) * fixedPrice);
   }, [currentDomainName, duration])
+
+  const handleTransfer = async (domain: string) => {
+    setLoadingView(true);
+
+    try {
+      await executeTransfer(domain, resolvernewOwner);
+    } catch (e) {
+      console.log(e);
+      toast.error("Transfer Failed");
+    }
+
+    setLoadingExtending(false);
+    setLoadingView(false);
+  }
 
 
   const handleExtend = async (domain: string) => {
@@ -398,6 +411,7 @@ const Home: React.FC<Props> = () => {
           myDomains.map((item: Domain) => (
             <Box
               sx={{
+                cursor: "pointer",
                 width: "100%",
                 display: "flex",
                 flexDirection: "row",
@@ -455,17 +469,82 @@ const Home: React.FC<Props> = () => {
         onClose={() => setLoadingExtending(false)}
         sx={{
           ".MuiPaper-root": {
-            background: "transparent",
+            background: "#ffffff30",
+            backdropFilter: "blur(10px)",
             boxShadow: "none",
             overflow: "hidden",
             margin: "0",
-            padding: "0",
+            padding: "50px 30px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "40px",
+            borderRadius: "1rem",
           },
         }}
       >
         <Box
           sx={{
-            marginTop: "5vh",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: "720px",
+              height: "64px",
+              padding: "0px 8px",
+              borderRadius: "32px",
+              background: "#203040",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "30px"
+            }}
+          >
+            <Input
+              placeholder="New owner Address"
+              sx={{
+                // border: "1px solid red",
+                width: "100%",
+                color: "#a0b0c0",
+                padding: "5px 10px",
+                ":before": {
+                  display: "none",
+                },
+                ":after": {
+                  display: "none",
+                },
+              }}
+              onChange={(e) => setResolverNewOwner(e.target.value)}
+            />
+
+            <Button
+              sx={{
+                height: "48px",
+                padding: "5px 20px",
+                borderRadius: "24px",
+                background: "#a0b0c0 !important",
+                color: "#101820",
+                textTransform: "none",
+                fontSize: "14px",
+                fontWeight: "400",
+                ":hover": {
+                  background: "#a0b0c0 !important",
+                },
+              }}
+
+              onClick={() => handleTransfer(selectedDomainName)}
+            >
+              Transfer
+            </Button>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",

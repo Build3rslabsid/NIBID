@@ -121,9 +121,7 @@ const Home: React.FC<Props> = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh",
         width: "100%",
-        position: "absolute"
       }}>
         <Typography variant="h4">
           Nibiru Name Service Resolver

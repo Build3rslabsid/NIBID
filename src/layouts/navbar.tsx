@@ -119,6 +119,18 @@ export default function Navbar() {
           >
             {"Resolver"}
           </Typography>
+
+          <Typography
+            sx={{
+              color: "white !important",
+              fontSize: "20px",
+              fontWeight: "700",
+              cursor: "pointer"
+            }}
+            onClick={() => router.push("/faq")}
+          >
+            {"FAQ"}
+          </Typography>
         </Box>
 
         <Box
@@ -135,7 +147,8 @@ export default function Navbar() {
               color: "white !important",
               fontSize: "15px",
               fontWeight: "700",
-              cursor: "pointer"
+              cursor: "pointer",
+              display: {xs : 'none'}
 
             }}
           >{walletAddress && (nativeBalance.toFixed(2))}</Typography>

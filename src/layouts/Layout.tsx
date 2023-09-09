@@ -7,6 +7,7 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Box } from "@mui/material";
+import Footer from "./footer";
 
 type Props = {
   children?: React.ReactNode;
@@ -26,6 +27,7 @@ const Layout = (props: Props) => {
       >
         {props.children}
       </Box>
+      <Footer />
     </div>
   );
 };

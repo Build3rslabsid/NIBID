@@ -34,6 +34,7 @@ export interface ISigningCosmWasmClientContext {
 
   executeRegister: Function;
   extendDate: Function;
+  executeTransfer: Function;
   fetchName: Function;
   fetchDomains: Function;
   fetchAllDomains: Function;
@@ -243,6 +244,48 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
     } else toast.warn("Domain not exist");
   };
 
+  const executeTransfer = async (name: string, newOwner: string) => {
+    setLoading(true);
+    const isExist = await fetchName(name);
+    if (isExist) {
+      try {
+        const result = await signingClient?.execute(
+          walletAddress, // sender address
+          PUBLIC_CONTRACT_ADDRESS, // token escrow contract
+          {
+            transfer: {
+              name: name,
+              new_owner: newOwner,
+            },
+          },
+          defaultFee,
+          undefined,
+          []
+        );
+        setLoading(false);
+        getBalances();
+
+        if (result && result.transactionHash) {
+          const response: JsonObject = await signingClient?.getTx(
+            result.transactionHash
+          );
+          let log_json = JSON.parse(response.rawLog);
+          let wasm_events = log_json[0].events[2].attributes;
+
+          if (wasm_events[3].value === newOwner) {
+            toast.success("Register success:" + result.transactionHash, toastOptions);
+            await fetchDomains(walletAddress);
+            console.log("************Hash result", result);
+          }
+        }
+      } catch (error) {
+        setLoading(false);
+        toast.error(`Contract error : ${error}`);
+        toast.error(error as string);
+      }
+    } else toast.warn("Domain not exist");
+  };
+
   const executeRegister = async (
     name: string,
     duration: number,
@@ -408,6 +451,7 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
 
     executeRegister,
     extendDate,
+    executeTransfer,
     fetchName,
     fetchDomains,
     fetchAllDomains,
